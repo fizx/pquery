@@ -45,9 +45,9 @@ StringNodeList.prototype.toString = function() {
 /**
  * Trims and replaces arbitrary whitespace with single spaces.
  */
-StringNodeList.prototype.normalizeText = function() {
-  $.each(this, function() {
-    this.string = this.string.replace(/\s+/g, ' ').replace(/^\s+/m, '').replace(/\s+$/m, '');
+StringNodeList.prototype.normalizeSpace = function() {
+  jQuery.each(this, function() {
+    this.string = this.string.replace(/\s+/g, ' ').replace(/^\s+/m, '').replace(/\s+jQuery/m, '');
   });  
   return this;
 }
@@ -55,22 +55,41 @@ StringNodeList.prototype.normalizeText = function() {
 /**
  * The core function is used to convert jQuery objects to 
  * StringNodeLists.
+ *
+ *   var jq = jQuery('a.linky');
+ *   var stringNodeList = jq.extract(function(domNode){
+ *     // ...
+ *     return someStringFromInsideTheDomNode;
+ *   });
  * 
- * Example
+ * The following shortcut arguments are also available:
+ * - extract("@foo") 
+ * => function(node) { return jQuery(node).attr("foo"); }
+ * - extract(/regex/) 
+ * => function(node) { return (/regex/.execute(jQuery(node).text())[0]; }
  */
 jQuery.fn.extract = function(func) {
   if(!func){
     func = function(node) {
-      return $(node).text();
+      return jQuery(node).text();
     };
   }
 
+  // extract(/regex/)
   if (func instanceof RegExp) {
     var re = func;
     func = function(node) {
-      var text = $(node).text();
+      var text = jQuery(node).text();
       return re.exec(text)[0];
-    }
+    };
+  }
+  
+  // extract("@attribute")
+  if (func instanceof String && func[0] == "@") {
+    var attr = func.substring(1);
+    func = function(node) {
+      return jQuery(node).attr(attr);
+    };
   }
   
   var list = new StringNodeList();
