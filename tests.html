@@ -11,43 +11,41 @@
   <script>
 
   $(document).ready(function(){
-    test("extraction", function() {
-      equals($(".date").extract(/\d+/).toString(), "[<12(18)>, <01(21)>]");
+    test("extracting regex", function() {
+      same($(".date").extract(/\d+/).toSimple(), ["12", "01"]);
     });
     
-    test("normalization", function() {
-      equals($(".message").extract().normalizeText().toString(), "[<Merry christmas!(26)>, <Happy new year!(29)>]");
+    test("extracting attribute", function() {
+      same($(".message").extract("@id").toSimple(), ["b", "a"]);
     });
-    
-    test("collation", function() {
-      var parselet = {
-        page: location.href,
-        messages: [{
-          
-        }]
-      }
       
+    test("extracting function", function() {
+      same($(".date").extract(function(node){
+        var text = $(node).text();
+        var arr = text.split("/");
+        var max = 0;
+        $.each(arr,function(){
+          var i = parseInt(this);
+          if(i > max) max = i;
+        });
+        return max;
+      }).toSimple(), [25, 10]);
     });
     
-
-// module("Module A");
-// 
-// test("first test within module", function() {
-//   ok( true, "all pass" );
-// });
-// 
-// test("second test within module", function() {
-//   ok( true, "all pass" );
-// });
-// 
-// module("Module B");
-// 
-// test("some other test", function() {
-//   expect(2);
-//   equals( true, false, "failing test" );
-//   equals( true, true, "passing test" );
-// });
-
+    test("trailing space normalization", function() {
+      same($(".message").extract().toSimple(), ["Merry christmas! ", "Happy new year!"]);
+      same($(".message").extract().normalizeSpace().toSimple(), ["Merry christmas!", "Happy new year!"]);
+    });
+    
+    // test("collation", function() {
+    //   var parselet = {
+    //     page: location.href,
+    //     messages: [{
+    //       
+    //     }]
+    //   }
+    //   
+    // });
   });
   </script>
   
@@ -62,7 +60,7 @@
     <ul>
       <li>
         <span class="date">12/25/09</span>
-        <span class="message" id="b">Merry christmas!   </span>
+        <span class="message" id="b">Merry christmas! </span>
       </li>
       <li>
         <span class="date">01/01/10</span>

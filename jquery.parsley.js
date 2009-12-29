@@ -47,9 +47,20 @@ StringNodeList.prototype.toString = function() {
  */
 StringNodeList.prototype.normalizeSpace = function() {
   jQuery.each(this, function() {
-    this.string = this.string.replace(/\s+/g, ' ').replace(/^\s+/m, '').replace(/\s+jQuery/m, '');
+    this.string = this.string.replace(/\s+/g, ' ').replace(/^\s+/m, '').replace(/\s+$/m, '');
   });  
   return this;
+}
+
+/**
+ * Creates an array of strings that mirrors this StringNodeList.
+ */
+StringNodeList.prototype.toSimple = function() {
+  var array = [];
+  jQuery.each(this, function() {
+    array.push(this.string);
+  });  
+  return array;
 }
 
 /**
@@ -63,6 +74,8 @@ StringNodeList.prototype.normalizeSpace = function() {
  *   });
  * 
  * The following shortcut arguments are also available:
+ * - extract() 
+ *   => function(node) { return jQuery(node).text(); }
  * - extract("@foo") 
  *   => function(node) { return jQuery(node).attr("foo"); }
  * - extract(/regex/) 
@@ -85,7 +98,7 @@ jQuery.fn.extract = function(func) {
   }
   
   // extract("@attribute")
-  if (func instanceof String && func[0] == "@") {
+  if (typeof(func) == "string" && func[0] == "@") {
     var attr = func.substring(1);
     func = function(node) {
       return jQuery(node).attr(attr);
