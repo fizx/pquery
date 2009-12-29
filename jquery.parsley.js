@@ -54,7 +54,7 @@ StringNodeList.prototype.normalizeSpace = function() {
 
 /**
  * The core function is used to convert jQuery objects to 
- * StringNodeLists.
+ * StringNodeLists. i.e.:
  *
  *   var jq = jQuery('a.linky');
  *   var stringNodeList = jq.extract(function(domNode){
