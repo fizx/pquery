@@ -1,0 +1,21 @@
+This is a port of the ideas of Parsley to Javascript.  There's decent comments in jquery.parsley.js.
+
+Here's the yc parselet ( http://parselets.com/parselets/yc ) in
+idiomatic JavaScript.  I'd like an opinion.
+
+var parselet = ({
+ articles: [{
+   title: $(".title a"),
+   title_verbose: $(".title a").extract(function(node){
+     // This function callback does the same thing as the
+     // default handler.  It's just here for the example, to show
+     // how to inject arbitrary logic.
+     return $(node).text().normalizeSpace();
+   }),
+   link:  $(".title a").extract("@href"),
+   comment_count: $(".subtext a:nth-child(3)").extract(/0-9+/).optional(),
+   comment_link: $(".subtext a:nth-child(3)").extract("@href"),
+   points: $(".subtext span").extract(/0-9+/)
+ }],
+ next: $(".title:nth-child(2) a").extract("@href");
+})
