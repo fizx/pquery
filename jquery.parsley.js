@@ -64,9 +64,9 @@ StringNodeList.prototype.normalizeSpace = function() {
  * 
  * The following shortcut arguments are also available:
  * - extract("@foo") 
- * => function(node) { return jQuery(node).attr("foo"); }
+ *   => function(node) { return jQuery(node).attr("foo"); }
  * - extract(/regex/) 
- * => function(node) { return (/regex/.execute(jQuery(node).text())[0]; }
+ *   => function(node) { return (/regex/.execute(jQuery(node).text())[0]; }
  */
 jQuery.fn.extract = function(func) {
   if(!func){
