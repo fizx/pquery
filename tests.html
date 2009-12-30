@@ -7,16 +7,15 @@
   <script src="jquery.parsley.js"></script>
   <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
   <script type="text/javascript" src="qunit.js"></script>
-
   <script>
 
   $(document).ready(function(){
     test("extracting regex", function() {
-      same($(".date").extract(/\d+/).toSimple(), ["12", "01"]);
+      same($(".date").extract(/\d+/).simple(), ["12", "01"]);
     });
     
     test("extracting attribute", function() {
-      same($(".message").extract("@id").toSimple(), ["b", "a"]);
+      same($(".message").extract("@id").simple(), ["b", "a"]);
     });
       
     test("extracting function", function() {
@@ -29,23 +28,52 @@
           if(i > max) max = i;
         });
         return max;
-      }).toSimple(), [25, 10]);
+      }).simple(), [25, 10]);
     });
     
     test("trailing space normalization", function() {
-      same($(".message").extract().toSimple(), ["Merry christmas! ", "Happy new year!"]);
-      same($(".message").extract().normalizeSpace().toSimple(), ["Merry christmas!", "Happy new year!"]);
+      same($(".message").extract().normalizeSpace().simple(), ["Merry christmas!", "Happy new year!"]);
     });
     
-    // test("collation", function() {
-    //   var parselet = {
-    //     page: location.href,
-    //     messages: [{
-    //       
-    //     }]
-    //   }
-    //   
-    // });
+    test("extract", function(){
+      var parselet = {
+        page: location.href.split("/").pop,
+        messages: [{
+          "message_id": $(".message").extract("@id"),
+          "date": $(".date"),
+          "text": $(".message")
+        }]
+      };
+      pQuery.extract(parselet);
+      same(parselet.messages[0].message_id.simple(), ["b", "a"]);
+    });
+    
+    test("grouping", function() {
+      var parselet = {
+        page: location.href.split("/").pop(),
+        messages: [{
+          "message_id": $(".message").extract("@id"),
+          "date": $(".date"),
+          "text": $(".message")
+        }]
+      };
+      
+      var output = pQuery.extractAndGroup(parselet);
+      var expected = {
+        page: "tests.html",
+        messages: [{
+          message_id: "b",
+          date: "12/25/09",
+          text: "Merry christmas!"
+        }, 
+        {
+          message_id: "b",
+          date: "01/01/10",
+          text: "Happy new year!"
+        }]
+      };
+      same(output.messages[0].text, expected.messages[0].text);
+    });
   });
   </script>
   
