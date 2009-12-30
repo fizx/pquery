@@ -45,16 +45,6 @@ StringNodeList.prototype.toString = function() {
 }
 
 /**
- * Trims and replaces arbitrary whitespace with single spaces.
- */
-StringNodeList.prototype.normalizeSpace = function() {
-  jQuery.each(this, function() {
-    this.string = pQuery.normalizeSpace(this.string);
-  });  
-  return this;
-}
-
-/**
  * Creates an array of strings that mirrors this StringNodeList.
  */
 StringNodeList.prototype.simple = function() {
@@ -77,7 +67,7 @@ StringNodeList.prototype.simple = function() {
  * 
  * The following shortcut arguments are also available:
  * - extract() 
- *   => function(node) { return pQuery.normalizeSpace(jQuery(node).text()); }
+ *   => function(node) { return jQuery(node).text(); }
  * - extract("@foo") 
  *   => function(node) { return jQuery(node).attr("foo"); }
  * - extract(/regex/) 
@@ -86,7 +76,7 @@ StringNodeList.prototype.simple = function() {
 jQuery.fn.extract = function(func) {
   if(!func){
     func = function(node) {
-      return pQuery.normalizeSpace(jQuery(node).text());
+      return jQuery(node).text();
     };
   }
 
@@ -178,10 +168,6 @@ pQuery.group = function(parselet) {
       pQuery.group(value); //recurse
     }
   });  
-}
-
-pQuery.normalizeSpace = function(string) {
-  return string.replace(/\s+/g, ' ').replace(/^\s+/m, '').replace(/\s+$/m, '');
 }
 
 pQuery.extract = function(parselet) {

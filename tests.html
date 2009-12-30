@@ -30,11 +30,7 @@
         return max;
       }).simple(), [25, 10]);
     });
-    
-    test("trailing space normalization", function() {
-      same($(".message").extract().normalizeSpace().simple(), ["Merry christmas!", "Happy new year!"]);
-    });
-    
+        
     test("extract", function(){
       var parselet = {
         page: location.href.split("/").pop,
@@ -88,7 +84,7 @@
     <ul>
       <li>
         <span class="date">12/25/09</span>
-        <span class="message" id="b">Merry christmas! </span>
+        <span class="message" id="b">Merry christmas!</span>
       </li>
       <li>
         <span class="date">01/01/10</span>
