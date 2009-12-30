@@ -45,7 +45,7 @@ Now, let's add grouping by calling pQuery.extractAndGroup() to transform the dat
 
 Now the links array has two objects, each representing one link.  This is a much better representation of the data.
 
-The goal here is to create a crawler that takes the inner {links: ...} object as input, and from that generates a json or csv representaion of an entire website.  
+The eventual goal of this project is to create a crawler that takes parselets inner {links: ...} object as input, and from that generates a json or csv representaion of an entire website.  
 
 Here's an example parselet that gets a list of stories from http://news.ycombinator.com.
 
