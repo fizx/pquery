@@ -111,7 +111,6 @@ function pQuery(){};
  * objects by running extract on them, then tries to group all of the 
  * StringNodeLists by their implicit page ordering.  Then it simplifies
  * the resulting data structure to vanilla object/arrays.
- * 
  */
 pQuery.extractAndGroup = function(parselet) {
   pQuery.extract(parselet);
@@ -119,14 +118,9 @@ pQuery.extractAndGroup = function(parselet) {
   return parselet;
 }
 
-pQuery.keys = function(object) {
-  var a = [];
-  jQuery.each(object, function(key){
-    a.push(key);
-  });
-  return a;
-}
-
+/**
+ * Builds a giant array of nodes as a pre-processing step for grouping.
+ */
 pQuery.compileNodes = function(object) {
   var nodes = [];
   jQuery.each(object, function(key, value) {    
@@ -141,11 +135,16 @@ pQuery.compileNodes = function(object) {
   return nodes.sort(function(a,b) { return a.position - b.position; });
 }
 
+/**
+ * This recursively looks for arrays with a single object child (i.e.: "[{...}]").
+ * This will get grouped.  The actual grouping mechanics are: (1) make references in
+ * each node to its key. (2) Throw all the nodes into a giant array. (3) Sort the
+ * array in page order. (4) Iterate the array, dropping nodes into the current group. 
+ * (4a) Add an additional group if the current group is full.
+ */
 pQuery.group = function(parselet) {
   jQuery.each(parselet, function(key, value) {    
-    // alert(key + typeof value + typeof(value[0]));
     if(value instanceof Array && typeof(value[0]) == "object") {
-      // Drop all nodes into a huge array, then iterate, grouping as we go
       var allNodes = pQuery.compileNodes(value[0]);
       var node;
       var groups = [];
@@ -156,7 +155,7 @@ pQuery.group = function(parselet) {
           group = {};
           groups.push(group)
         }
-        if(node.multiple){
+        if(node.multiple) {
           if(!group[node.key]) group[node.key] = [];
           group[node.key].push(node.string);
         } else {
@@ -170,11 +169,18 @@ pQuery.group = function(parselet) {
   });  
 }
 
+/**
+ * This does the implied conversion from jQuery objects to StringNodeLists.
+ * It also transforms the array: [$(...)] into a (Multiple) StringNodeList.
+ * You shouldn't ever have to call this method; it's a preprocessing step
+ * to extractAndGroup().
+ */
 pQuery.extract = function(parselet) {
   jQuery.each(parselet, function(key, value) {
     if(typeof(value) == "array") { 
       if(value[0] instanceof StringNodeList) {
-        parselet[key] = value = value[0].multiple();
+        parselet[key] = value = value[0];
+        value.multiple = true;
       } else {
         pQuery.extract(value);
       }
