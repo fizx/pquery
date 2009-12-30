@@ -7,8 +7,10 @@ For example, let's perform some extractions on the following HTML:
 
   <html><a href="/">Home</a><a href="http://google.com">Google</a></html>
 
-	js> jQuery("a").extract()
-	<StringNodeList[<Home(1)>, <Google(2)>]>
+Here's some console output from simple use cases:
+
+  js> jQuery("a").extract()
+  <StringNodeList[<Home(1)>, <Google(2)>]>
   js> jQuery("a").extract().simple()
   ["Home", "Google"]
 
@@ -17,17 +19,17 @@ You can also pass regexen, attributes, or arbitrary functions to extract().
   js> jQuery("a").extract("@href").simple()
   ["/", "http://google.com"]
   js> jQuery("a").extract(/[A-Z]/).simple()
-	["H", "G"]
-	js> jQuery("a").extract(function(node){ return "hi"; }).simple()
-	["hi", "hi"]
+  ["H", "G"]
+  js> jQuery("a").extract(function(node){ return "hi"; }).simple()
+  ["hi", "hi"]
 
 The second idiom is auto-grouping.  Individual extractions can be grouped into a larger data structure (called a parselet), which will parse the page in an intelligent way.  Here's the naive ungrouped way to use extract:
 
-	js> var parselet = { 
-	      links: [{
+  js> var parselet = { 
+        links: [{
           text: $("a").extract().simple(),
           href: $("a").extract("@href").simple()
-	      }]
+        }]
       };
   { links: [{ text: ["Home", "Google"], href: ["/", "http://google.com"] }] }
 
